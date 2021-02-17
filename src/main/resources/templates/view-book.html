@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/viewBook.css">
+<title>Reviews!</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="../static/js/nav.js" th:src="@{/js/nav.js}"></script>
+</head>
+
+<body>
+	<header th:insert="fragments/header.html :: page-header"></header>
+	
+	<div th:if="${message}" class="error">
+		<p th:text="${message}" />
+	</div>
+	
+	<div th:insert="fragments/nav.html :: page-nav"></div>
+	
+	<section>
+		<p>
+			<div class="top-right" sec:authorize="hasAnyRole('USER','MANAGER')">
+				<div th:if="${favourited}" class ="flex-container">
+					<p>favourited</p> 
+					<p><div class="favourite">
+						<div class ="favourited"></div>
+						<a href ="#" th:href="@{/deleteMyBooks/} +${book.id}" class="favourite">
+							<img src ="/img/favourite-star.png">
+						</a>
+					</div></p>
+				</div>
+				<div th:unless="${favourited}" class ="flex-container">
+					<p>favourite</p> 
+					<a href ="#" th:href="@{/addMyBooks/} +${book.id}" class="favourite">
+						<img src ="/img/favourite-star.png">
+					</a>
+				</div>
+			</div>
+		</p>
+		<div class ="view-flex-container">
+			<div class ="flex-container2" >
+				<div>
+					<img class ="book-cover" th:src="@{${book.img}}">
+					<h2><a href="#" th:href="@{/user/addReview/} +${book.id}">Add Review</a></h2>
+				</div>
+				<div class ="book-details">
+					<p>
+					<h3 th:text="${book.title}"></h3>
+						<p th:text="|By: ${book.author}|"></p>
+						<div class ="starcontainer">
+							<p th:text="|${book.aveStars} stars|">jonny937</p>
+							<img src ="/img/stars.png">
+							<div class ="starbar" th:style="|width: calc(20% * ${book.aveStars})|"></div>
+						</div></p>
+				</div>
+			</div>
+	
+			<div class ="description">
+				<p th:text ="${book.description}">follows the journey of Brian the snail, an adventure you'll never forget</p>
+			</div>
+		</div>
+		<div th:if="${reviews.empty}" class ="center-container">
+			<h2>There are no reviews!</h2>
+		</div>
+	</section>
+	
+	<div th:unless="${reviews.empty}">
+		<section class ="flex-container">
+			<div th:each="review : ${reviews}" class="review-container">
+				<div class ="starcontainer" >
+					<img src ="/img/stars.png">
+					<div class ="starbar" th:style="|width: calc(20% * ${review.stars})|"></div>
+				</div>
+				<h3 th:text="${review.username}">jonny937</h3>
+
+				<p th:text="${review.text}">it was great</p>
+			</div>
+		</section>
+	</div>
+</body>
+<div th:insert="fragments/footer.html :: page-footer"></div>
+</html>
